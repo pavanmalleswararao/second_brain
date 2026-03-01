@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Second Brain
+
+Second Brain is a Next.js application that provides an AI-powered note-taking and knowledge management platform. It allows users to sign up/sign in, create notes augmented with AI-generated summaries and tags, and chat with their accumulated notes.
+
+The project is inspired by a reference demo site and contains the following core functionality:
+
+- User authentication with NextAuth credentials provider
+- MongoDB persistence for notes and users
+- Automatic AI summaries and tag extraction using an LLM (configured via Groq SDK)
+- A chat interface to query your notes using the AI model
+- Responsive, modern UI built with Tailwind CSS and Framer Motion
+
+## Features
+
+- **Create Note**: Write a note and the app uses AI to summarize content and suggest tags.
+- **Search**: Filter notes by title.
+- **Chat with Notes**: Ask questions about your stored notes; the AI answers using only your notes' content.
+- **Authentication**: Protected dashboard and admin panel; JWT sessions with role support.
+- **User Interface**: Professional-looking layout with navbar, cards, and forms.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Node.js 18 or later
+- MongoDB (Atlas or local)
+- API key for Groq (or another LLM provider)
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone <repo-url> second-brain
+   cd second-brain
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Copy `.env.example` to `.env` and fill in your values:
+   ```env
+   MONGODB_URI=mongodb://localhost:27017/second-brain
+   NEXTAUTH_SECRET=your-secret
+   NEXTAUTH_URL=http://localhost:3000
+   GROQ_API_KEY=your_groq_key
+   ```
+
+4. Run development server:
+   ```bash
+   npm run dev
+   ```
+
+Open [http://localhost:3000](http://localhost:3000) to view the app.
+
+## Project Structure
+
+```
+second-brain/
+├─ src/
+│  ├─ app/              # Next.js app directory (pages, layouts)
+│  ├─ components/       # Reusable React components
+│  ├─ lib/              # Helper modules (mongodb, groq)
+│  ├─ models/           # Mongoose schemas
+│  ├─ types/            # Type declarations
+│  └─ ...
+├─ public/              # Static assets
+├─ package.json
+├─ tsconfig.json
+└─ README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### API Routes
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `POST /api/signup` – register new user (hashes password)
+- `POST /api/auth/[...nextauth]` – NextAuth credentials provider
+- `GET/POST /api/notes` – list and add notes
+- `POST /api/ai` – call LLM to summarize content and return tags
+- `POST /api/chat` – send question & notes context to LLM and return answer
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+All routes perform a MongoDB connection check and error handling.
 
-## Learn More
+## Environment Variables
 
-To learn more about Next.js, take a look at the following resources:
+| Name            | Description                           |
+|-----------------|---------------------------------------|
+| MONGODB_URI     | MongoDB connection string             |
+| NEXTAUTH_SECRET | Secret for NextAuth JWT sessions      |
+| NEXTAUTH_URL    | Base URL of the application           |
+| GROQ_API_KEY    | API key for Groq LLM provider         |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Extending the App
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Changing AI provider**: swap `lib/groq.ts` and update routes with a different SDK (OpenAI, HuggingFace, etc.).
+- **Additional fields**: modify `Note` schema and update forms accordingly.
+- **Admin features**: the `/admin` page is protected and can be expanded for user management.
 
-## Deploy on Vercel
+## Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The app can be deployed on platforms that support Next.js (Vercel, Netlify, etc.). Ensure environment variables are set in the deployment settings and the MongoDB URI is accessible.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contributing
+
+Feel free to fork and submit pull requests. Maintain consistent code style and include tests for new features where appropriate.
+
+## License
+
+This project is provided under the MIT license unless otherwise specified.
+
